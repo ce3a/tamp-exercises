@@ -174,7 +174,7 @@ public:
 
 int main()
 {
-    tamp::table table;
+    tamp::table table(10);
     std::array<std::pair<std::thread,
             std::unique_ptr<tamp::philosopher>>, 5> threads;
 
@@ -182,6 +182,8 @@ int main()
     for (auto& t : threads) {
         t.second = std::make_unique<tamp::philosopher>(table, i++);
         t.first  = std::thread{&tamp::philosopher::work, &*t.second};
+        if (i != 3)
+            i++;
     }
 
     for (auto& t : threads) {
