@@ -171,26 +171,18 @@ public:
 int main()
 {
     tamp::table table;
+    std::array<std::pair<std::thread,
+            std::unique_ptr<tamp::philosopher>>, 5> threads;
 
-    std::array<tamp::philosopher, 5> phils = {
-        tamp::philosopher{table, 0},
-        tamp::philosopher{table, 1},
-        tamp::philosopher{table, 2},
-        tamp::philosopher{table, 3},
-        tamp::philosopher{table, 4}
-    };
+    auto i = 0;
+    for (auto& t : threads) {
+        t.second = std::make_unique<tamp::philosopher>(table, i++);
+        t.first  = std::thread{&tamp::philosopher::work, &*t.second};
+    }
 
-    std::thread t0{&tamp::philosopher::work, &phils[0]};
-    std::thread t1{&tamp::philosopher::work, &phils[1]};
-    std::thread t2{&tamp::philosopher::work, &phils[2]};
-    std::thread t3{&tamp::philosopher::work, &phils[3]};
-    std::thread t4{&tamp::philosopher::work, &phils[4]};
-
-    t0.join();
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
+    for (auto& t : threads) {
+        t.first.join();
+    }
 
     return 0;
 }
