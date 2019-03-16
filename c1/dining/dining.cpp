@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <array>
+#include <vector>
 #include <atomic>
 #include <memory>
 #include <thread>
@@ -44,17 +45,20 @@ public:
 };
 
 class table {
-    std::array<std::pair<
-            std::shared_ptr<chopstick>, std::atomic<bool>>, 5> sticks;
+    std::vector<std::pair<
+            std::shared_ptr<chopstick>, std::atomic<bool>>> sticks;
 
 public:
-    table()
+    // NOTE: table size must be greater than 1
+    table(std::size_t size) : sticks(size)
     {
         for (auto& stick : sticks) {
             stick.first = std::make_shared<chopstick>();
             stick.second.store(false);
         }
     }
+
+    table() : table(5) {}
 
     auto size() -> std::size_t const
     {
