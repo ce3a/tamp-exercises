@@ -7,7 +7,7 @@ peterson::peterson() : flag{}, turn{} {}
 
 void peterson::acquire(int me)
 {
-    int he = 1 - me;
+    int he = !!(me == 0);
     flag.at(me).store(true);    // I'm interested
     turn.store(he);             // you go first
     while (flag.at(he).load() && turn.load() == he)
