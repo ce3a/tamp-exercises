@@ -1,4 +1,5 @@
 #include <peterson_lock.hpp>
+#include <thread>
 
 namespace tamp {
 namespace lock {
@@ -11,7 +12,7 @@ void peterson::acquire(int me)
     flag.at(me).store(true);    // I'm interested
     turn.store(he);             // you go first
     while (flag.at(he).load() && turn.load() == he)
-        ; // wait
+        std::this_thread::yield(); // wait
 }
 
 void peterson::release(int me)
