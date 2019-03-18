@@ -9,15 +9,16 @@ peterson::peterson() : flag{}, turn{} {}
 void peterson::acquire(int me)
 {
     int he = !!(me == 0);
-    flag.at(me).store(true);    // I'm interested
-    turn.store(he);             // you go first
-    while (flag.at(he).load() && turn.load() == he)
-        std::this_thread::yield(); // wait
+    flag.at(me).store(true, std::memory_order_relaxed);    // I'm interested,...
+    turn.store(he);                                        // but it's your turn
+    while (flag.at(he).load(std::memory_order_acquire)
+            && turn.load(std::memory_order_relaxed) == he)
+        std::this_thread::yield();                         // waiting
 }
 
 void peterson::release(int me)
 {
-    flag.at(me).store(false);   // I'm not interested
+    flag.at(me).store(false, std::memory_order_release);   // I'm not interested
 }
 
 } // namespase lock
