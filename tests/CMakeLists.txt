@@ -14,4 +14,7 @@ find_package (Threads)
 _add_test(peterson_lock)
 target_link_libraries(test_peterson_lock tamp ${CMAKE_THREAD_LIBS_INIT})
 
+_add_test(bakery_lock)
+target_link_libraries(test_bakery_lock tamp ${CMAKE_THREAD_LIBS_INIT})
+
 # vim: tabstop=4 shiftwidth=4 softtabstop=4 expandtab
